@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="description" content="Una carta de amor especial para celebrar nuestro aniversario.">
+    <title>Nuestro Aniversario ❤</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💌</text></svg>">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Nunito:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* === RESET & BASE === */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            width: 100%;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            background-color: #F2E9E1;
+            color: #4a3728;
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            /* Sutil textura de fondo */
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(192, 69, 81, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(192, 69, 81, 0.03) 0%, transparent 50%);
+        }
+
+        /* Safe areas para iPhone con notch */
+        body {
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        /* ============================================ */
+        /* === PANTALLA 1: SOBRE / CARTA CERRADA ====== */
+        /* ============================================ */
+        .sobre-escena {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            background-color: #F2E9E1;
+            background-image:
+                radial-gradient(circle at 30% 70%, rgba(192, 69, 81, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(192, 69, 81, 0.04) 0%, transparent 50%);
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .sobre-escena.oculto {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* --- El sobre --- */
+        .sobre {
+            width: 260px;
+            height: 170px;
+            position: relative;
+            perspective: 800px;
+            margin-bottom: 35px;
+        }
+
+        .sobre-cuerpo {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(160deg, #d4a574 0%, #c99165 50%, #be845a 100%);
+            border-radius: 10px;
+            position: relative;
+            box-shadow:
+                0 12px 35px rgba(79, 56, 41, 0.2),
+                0 4px 12px rgba(79, 56, 41, 0.15),
+                inset 0 -2px 6px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        /* Líneas decorativas del sobre */
+        .sobre-cuerpo::before {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        /* Sello de corazón */
+        .sobre-sello {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle at 40% 35%, #d4515f, #a03040);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow:
+                0 3px 10px rgba(160, 48, 64, 0.35),
+                inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            z-index: 2;
+        }
+
+        /* Solapa del sobre */
+        .sobre-solapa {
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            height: 0;
+            border-left: 131px solid transparent;
+            border-right: 131px solid transparent;
+            border-top: 95px solid #b07e52;
+            transform-origin: top center;
+            z-index: 3;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.08));
+        }
+
+        .sobre.abierto .sobre-solapa {
+            transform: rotateX(180deg);
+        }
+
+        /* Carta que asoma */
+        .carta-saliendo {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            width: 82%;
+            height: 55%;
+            background: linear-gradient(180deg, #fff 0%, #faf5f0 100%);
+            border-radius: 5px 5px 0 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
+            z-index: 1;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carta-saliendo::before {
+            content: '❤';
+            font-size: 22px;
+            color: #C04551;
+            opacity: 0.4;
+        }
+
+        .sobre.abierto .carta-saliendo {
+            transform: translateX(-50%) translateY(-65px);
+        }
+
+        /* Texto invitación */
+        .texto-invitacion {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #4a3728;
+            animation: pulso 2.5s ease-in-out infinite;
+            text-align: center;
+            user-select: none;
+            letter-spacing: 0.5px;
+        }
+
+        .texto-invitacion span {
+            display: block;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            opacity: 0.55;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        @keyframes pulso {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.04);
+                opacity: 0.75;
+            }
+        }
+
+        /* Corazones flotantes de fondo */
+        .corazon-flotante {
+            position: absolute;
+            opacity: 0.1;
+            animation: flotar 7s ease-in-out infinite;
+            pointer-events: none;
+            color: #C04551;
+        }
+
+        @keyframes flotar {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-18px) rotate(8deg) scale(1.05);
+            }
+        }
+
+        /* ============================================ */
+        /* === PANTALLA 2: LA TARJETA ================= */
+        /* ============================================ */
+        .tarjeta-contenedor {
+            width: 92%;
+            max-width: 720px;
+            padding: 28px 24px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(25px) scale(0.97);
+            transition: opacity 1s ease 0.4s, transform 1s ease 0.4s;
+        }
+
+        .tarjeta-contenedor.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* --- Layout principal --- */
+        .seccion-superior {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            min-height: 420px;
+            gap: 10px;
+        }
+
+        /* --- Columna del Texto --- */
+        .columna-texto {
+            flex: 1;
+            padding-right: 16px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            position: relative;
+            text-align: left;
+            z-index: 10;
+        }
+
+        .titulo-principal {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.35rem;
+            margin-bottom: 22px;
+            display: block;
+            color: #3d2a1b;
+            letter-spacing: 0.3px;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .parrafo {
+            margin-bottom: 18px;
+            display: block;
+            color: #5a4232;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .firma {
+            margin-top: 28px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #C04551;
+            display: inline-block;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .texto-animado {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        /* --- Columna del Árbol --- */
+        .columna-arbol {
+            flex: 1.1;
+            position: relative;
+            height: 440px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        /* Tronco elegante con forma afinada */
+        .tronco {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 140px;
+            z-index: 1;
+            /* Tronco se afina hacia arriba con clip-path */
+            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+            background: linear-gradient(to right,
+                    #4a2c10 0%,
+                    #6b4423 25%,
+                    #7a5535 45%,
+                    #6b4423 65%,
+                    #4a2c10 100%);
+        }
+
+        /* Textura de corteza sutil */
+        .tronco::before {
+            content: '';
+            position: absolute;
+            inset: 8px 3px;
+            background: repeating-linear-gradient(to bottom,
+                    transparent,
+                    transparent 6px,
+                    rgba(0, 0, 0, 0.06) 6px,
+                    rgba(0, 0, 0, 0.06) 7px);
+            border-radius: 2px;
+        }
+
+        /* Sombra en el suelo */
+        .tronco::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: -12px;
+            right: -12px;
+            height: 12px;
+            background: radial-gradient(ellipse, rgba(74, 44, 16, 0.2), transparent 70%);
+            border-radius: 50%;
+        }
+
+        .copa-arbol-contenedor {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 320px;
+            height: 330px;
+            z-index: 2;
+        }
+
+        .petalo-copa {
+            position: absolute;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+            user-select: none;
+            transition: transform 0.3s ease;
+        }
+
+        .petalo-copa:hover {
+            transform: scale(1.4) rotate(15deg) !important;
+        }
+
+        /* Pétalos que caen — mecida de viento */
+        .petalo-cayendo-arbol {
+            position: absolute;
+            opacity: 1;
+            pointer-events: none;
+            z-index: 3;
+            animation: caerDelArbol var(--dur) ease-in-out forwards;
+        }
+
+        @keyframes caerDelArbol {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            15% {
+                transform: translateY(55px) translateX(calc(var(--desvio) * 0.35)) rotate(50deg);
+                opacity: 0.92;
+            }
+
+            35% {
+                transform: translateY(120px) translateX(calc(var(--desvio) * -0.2)) rotate(130deg);
+                opacity: 0.8;
+            }
+
+            55% {
+                transform: translateY(200px) translateX(calc(var(--desvio) * 0.55)) rotate(220deg);
+                opacity: 0.6;
+            }
+
+            75% {
+                transform: translateY(280px) translateX(calc(var(--desvio) * -0.15)) rotate(310deg);
+                opacity: 0.35;
+            }
+
+            100% {
+                transform: translateY(400px) translateX(var(--desvio)) rotate(420deg);
+                opacity: 0;
+            }
+        }
+
+        /* --- Sección Contador --- */
+        .seccion-contador {
+            text-align: left;
+            border-top: 1px solid rgba(79, 56, 41, 0.08);
+            padding-top: 22px;
+            margin-top: 8px;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .seccion-contador.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .titulo-contador {
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: #7a6355;
+            letter-spacing: 0.3px;
+        }
+
+        #contador-tiempo-real {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #3d2a1b;
+            letter-spacing: 0.5px;
+        }
+
+        /* ============================================ */
+        /* === RESPONSIVE — MÓVIL / IPHONE ============ */
+        /* ============================================ */
+        @media (max-width: 768px) {
+            .sobre {
+                width: 220px;
+                height: 145px;
+            }
+
+            .sobre-solapa {
+                border-left: 111px solid transparent;
+                border-right: 111px solid transparent;
+                border-top: 80px solid #b07e52;
+            }
+
+            .tarjeta-contenedor {
+                width: 95%;
+                padding: 20px 16px;
+            }
+
+            .seccion-superior {
+                flex-direction: column;
+                text-align: center;
+                min-height: auto;
+                gap: 0;
+            }
+
+            .columna-texto {
+                padding-right: 0;
+                margin-bottom: 8px;
+                text-align: center;
+                font-size: 1rem;
+            }
+
+            .titulo-principal {
+                font-size: 1.2rem;
+            }
+
+            .firma {
+                font-size: 1.1rem;
+            }
+
+            .columna-arbol {
+                height: 340px;
+                width: 100%;
+            }
+
+            .copa-arbol-contenedor {
+                width: 260px;
+                height: 270px;
+                bottom: 70px;
+            }
+
+            .tronco {
+                height: 110px;
+                width: 18px;
+            }
+
+            .seccion-contador {
+                text-align: center;
+            }
+
+            #contador-tiempo-real {
+                font-size: 1.15rem;
+            }
+        }
+
+        /* Extra pequeño (iPhone SE, etc) */
+        @media (max-width: 375px) {
+            .sobre {
+                width: 200px;
+                height: 132px;
+            }
+
+            .sobre-solapa {
+                border-left: 101px solid transparent;
+                border-right: 101px solid transparent;
+                border-top: 73px solid #b07e52;
+            }
+
+            .columna-arbol {
+                height: 300px;
+            }
+
+            .copa-arbol-contenedor {
+                width: 230px;
+                height: 240px;
+                bottom: 60px;
+            }
+
+            .columna-texto {
+                font-size: 0.95rem;
+            }
+
+            #contador-tiempo-real {
+                font-size: 1.05rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ====== PANTALLA 1: SOBRE / CARTA ====== -->
+    <div class="sobre-escena" id="sobre-escena">
+
+        <!-- Corazones flotantes -->
+        <div class="corazon-flotante" style="top:8%; left:12%; animation-delay:0s; font-size:22px;">❤</div>
+        <div class="corazon-flotante" style="top:18%; right:18%; animation-delay:1.2s; font-size:14px;">❤</div>
+        <div class="corazon-flotante" style="bottom:22%; left:8%; animation-delay:2.4s; font-size:18px;">❤</div>
+        <div class="corazon-flotante" style="bottom:12%; right:12%; animation-delay:0.6s; font-size:16px;">❤</div>
+        <div class="corazon-flotante" style="top:42%; left:4%; animation-delay:3.5s; font-size:12px;">❤</div>
+        <div class="corazon-flotante" style="top:32%; right:6%; animation-delay:1.8s; font-size:20px;">❤</div>
+        <div class="corazon-flotante" style="bottom:35%; right:25%; animation-delay:4.2s; font-size:10px;">❤</div>
+
+        <div class="sobre" id="sobre">
+            <div class="sobre-solapa"></div>
+            <div class="sobre-cuerpo">
+                <div class="sobre-sello">❤</div>
+            </div>
+            <div class="carta-saliendo"></div>
+        </div>
+
+        <div class="texto-invitacion">
+            Toca para abrir ❤
+            <span>Tengo algo especial para ti</span>
+        </div>
+    </div>
+
+    <!-- ====== PANTALLA 2: TARJETA ====== -->
+    <div class="tarjeta-contenedor" id="tarjeta">
+
+        <div class="seccion-superior">
+            <div class="columna-texto">
+                <span class="titulo-principal" id="txt-1">Para el amor de mi vida:</span>
+                <span class="parrafo" id="txt-2">Si pudiera elegir un lugar seguro, sería a tu lado.</span>
+                <span class="parrafo" id="txt-3">Cuanto más tiempo estoy contigo más te amo.</span>
+                <div class="firma" id="txt-4">— Te amo —</div>
+            </div>
+
+            <div class="columna-arbol">
+                <div class="tronco"></div>
+                <div class="copa-arbol-contenedor" id="area-copa"></div>
+            </div>
+        </div>
+
+        <div class="seccion-contador" id="seccion-contador">
+            <div class="titulo-contador">Mi amor por ti comenzó hace...</div>
+            <div id="contador-tiempo-real">Cargando...</div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // >>> CONFIGURACIÓN DE FECHA <<<
+        // 9 de Octubre de 2025, 12:00 AM
+        const fechaInicio = new Date(2025, 9, 9, 0, 0, 0);
+        // ==========================================
+
+        let relojInterval = null;
+        let petalosInterval = null;
+        let tarjetaAbierta = false;
+
+        // =============================
+        // SOBRE: Abrir al tocar/clic
+        // =============================
+        const sobreEscena = document.getElementById('sobre-escena');
+
+        // Usar touchend para iPhones (más responsivo que click en iOS)
+        function abrirCarta(e) {
+            e.preventDefault();
+            if (tarjetaAbierta) return;
+            tarjetaAbierta = true;
+
+            document.getElementById('sobre').classList.add('abierto');
+
+            setTimeout(function () {
+                sobreEscena.classList.add('oculto');
+                document.getElementById('tarjeta').classList.add('visible');
+
+                construirArbol();
+
+                // Texto en cascada
+                var textos = ['txt-1', 'txt-2', 'txt-3', 'txt-4'];
+                textos.forEach(function (id, i) {
+                    setTimeout(function () {
+                        document.getElementById(id).classList.add('texto-animado');
+                    }, 350 + i * 280);
+                });
+
+                // Contador
+                setTimeout(function () {
+                    document.getElementById('seccion-contador').classList.add('visible');
+                    actualizarReloj();
+                    relojInterval = setInterval(actualizarReloj, 1000);
+                }, 1500);
+
+                // Pétalos
+                setTimeout(function () {
+                    petalosInterval = setInterval(soltarPetalo, 280);
+                }, 1800);
+            }, 1100);
+        }
+
+        // Escuchar tanto touch como click para máxima compatibilidad
+        sobreEscena.addEventListener('touchend', abrirCarta, { passive: false });
+        sobreEscena.addEventListener('click', abrirCarta);
+
+        // =============================
+        // ÁRBOL: Copa en forma de ❤
+        // =============================
+        function construirArbol() {
+            var copa = document.getElementById('area-copa');
+            var colores = [
+                '#b01030', '#c2185b', '#d81b60', '#ad1457',  // rojos/crimsons profundos
+                '#cc1a1a', '#d42b2b', '#e63946',              // rojos
+                '#e84a5f', '#d44d5c', '#f06292',              // rosas medios
+                '#ff6b81', '#ff8a9b', '#ffb3c1'               // rosas claros
+            ];
+
+            // Dimensiones del contenedor
+            var ancho = copa.offsetWidth || 320;
+            var alto = copa.offsetHeight || 330;
+            var centroX = ancho / 2;
+            var centroY = alto / 2 - 10;
+            var escala = Math.min(ancho, alto) / 35;
+
+            function crearPetalo(nx, ny) {
+                var p = document.createElement('span');
+                p.classList.add('petalo-copa');
+                p.innerHTML = '❤';
+                p.style.color = colores[Math.floor(Math.random() * colores.length)];
+
+                var tam = Math.random() * 20 + 7;
+                p.style.fontSize = tam + 'px';
+                p.style.left = (centroX + nx * escala - tam / 2) + 'px';
+                p.style.top = (centroY + ny * escala - tam / 2) + 'px';
+                p.style.transform = 'rotate(' + (Math.random() * 50 - 25) + 'deg)';
+                p.style.opacity = (0.75 + Math.random() * 0.25).toString();
+
+                copa.appendChild(p);
+            }
+
+            // Verificar si un punto (x,y) está dentro del corazón
+            // Ecuación: (x²+y²-1)³ - x²y³ ≤ 0 (normalizada)
+            function dentroCorazon(x, y) {
+                var x2 = x * x;
+                var y2 = y * y;
+                var v = x2 + y2 - 1;
+                return (v * v * v - x2 * y * y2) <= 0;
+            }
+
+            // Rejection sampling: puntos aleatorios uniformes dentro del corazón
+            var colocados = 0;
+            var intentos = 0;
+            while (colocados < 480 && intentos < 5000) {
+                intentos++;
+                // Punto aleatorio en el bounding box [-1.2, 1.2] x [-1.3, 1.5]
+                var rx = (Math.random() * 2.4) - 1.2;
+                var ry = (Math.random() * 2.8) - 1.3;
+
+                if (dentroCorazon(rx, ry)) {
+                    // Mapear de [-1.2,1.2]x[-1.3,1.5] a coordenadas del contenedor
+                    crearPetalo(rx * 13.5, -ry * 13.5);
+                    colocados++;
+                }
+            }
+        }
+
+        // =============================
+        // ÁRBOL: Pétalos cayendo
+        // =============================
+        function soltarPetalo() {
+            var copa = document.getElementById('area-copa');
+            var p = document.createElement('span');
+            p.classList.add('petalo-cayendo-arbol');
+            p.innerHTML = '❤';
+
+            var colores = ['#cc1a1a', '#d42b2b', '#e63946', '#c2185b', '#ff6b81', '#e84a5f', '#f06292'];
+            p.style.color = colores[Math.floor(Math.random() * colores.length)];
+
+            var tam = Math.random() * 13 + 7;
+            p.style.fontSize = tam + 'px';
+
+            // Posición desde la mitad inferior de la copa
+            var ancho = copa.offsetWidth || 320;
+            var alto = copa.offsetHeight || 330;
+            p.style.left = (ancho * 0.15 + Math.random() * ancho * 0.7) + 'px';
+            p.style.top = (alto * 0.4 + Math.random() * alto * 0.4) + 'px';
+
+            var desvio = (Math.random() - 0.5) * 200;
+            p.style.setProperty('--desvio', desvio + 'px');
+
+            var dur = Math.random() * 2.5 + 2.5;
+            p.style.setProperty('--dur', dur + 's');
+
+            copa.appendChild(p);
+            p.addEventListener('animationend', function () { p.remove(); });
+        }
+
+        // =============================
+        // RELOJ: Contador
+        // =============================
+        function actualizarReloj() {
+            var ahora = new Date();
+            var diff = ahora - fechaInicio;
+            var el = document.getElementById('contador-tiempo-real');
+            var titulo = document.querySelector('.titulo-contador');
+
+            var abs = Math.abs(diff);
+            var d = Math.floor(abs / 864e5);
+            var h = Math.floor((abs % 864e5) / 36e5);
+            var m = Math.floor((abs % 36e5) / 6e4);
+            var s = Math.floor((abs % 6e4) / 1000);
+
+            var hs = String(h).padStart(2, '0');
+            var ms = String(m).padStart(2, '0');
+            var ss = String(s).padStart(2, '0');
+
+            el.textContent = d + ' días ' + hs + ' horas ' + ms + ' minutos ' + ss + ' segundos';
+
+            if (diff < 0) {
+                el.style.color = '#C04551';
+                titulo.textContent = 'Nuestro amor comienza oficialmente en...';
+            } else {
+                el.style.color = '#3d2a1b';
+                titulo.textContent = 'Mi amor por ti comenzó hace...';
+            }
+        }
+    </script>
+</body>
+
+</html>
