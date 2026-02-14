@@ -469,20 +469,33 @@
         /* === RESPONSIVE — MÓVIL / IPHONE ============ */
         /* ============================================ */
         @media (max-width: 768px) {
+
+            body,
+            html {
+                min-height: 100vh;
+                min-height: 100dvh;
+                align-items: flex-start;
+            }
+
+            .sobre-escena {
+                min-height: 100vh;
+                min-height: 100dvh;
+            }
+
             .sobre {
-                width: 220px;
-                height: 145px;
+                width: clamp(180px, 55vw, 220px);
+                height: clamp(118px, 36vw, 145px);
             }
 
             .sobre-solapa {
-                border-left: 111px solid transparent;
-                border-right: 111px solid transparent;
-                border-top: 80px solid #b07e52;
+                border-left: clamp(91px, 28vw, 111px) solid transparent;
+                border-right: clamp(91px, 28vw, 111px) solid transparent;
+                border-top: clamp(65px, 20vw, 80px) solid #b07e52;
             }
 
             .tarjeta-contenedor {
                 width: 95%;
-                padding: 20px 16px;
+                padding: 24px 18px 28px;
             }
 
             .seccion-superior {
@@ -496,72 +509,93 @@
                 padding-right: 0;
                 margin-bottom: 28px;
                 text-align: center;
-                font-size: 1rem;
+                font-size: clamp(0.92rem, 2.5vw, 1.05rem);
+                line-height: 1.65;
+                position: relative;
+                z-index: 10;
             }
 
             .titulo-principal {
-                font-size: 1.2rem;
+                font-size: clamp(1.1rem, 3.2vw, 1.3rem);
+                margin-bottom: 18px;
+            }
+
+            .parrafo {
+                margin-bottom: 14px;
             }
 
             .firma {
-                font-size: 1.1rem;
+                font-size: clamp(1rem, 2.8vw, 1.15rem);
+                margin-top: 20px;
             }
 
             .columna-arbol {
-                height: 340px;
+                height: clamp(260px, 42vh, 360px);
                 width: 100%;
                 overflow: hidden;
+                position: relative;
             }
 
             .copa-arbol-contenedor {
-                width: 260px;
-                height: 270px;
-                bottom: 45px;
+                width: clamp(210px, 65vw, 280px);
+                height: clamp(220px, 34vh, 290px);
+                bottom: clamp(30px, 5vh, 50px);
             }
 
             .tronco {
-                height: 110px;
+                height: clamp(85px, 14vh, 120px);
                 width: 18px;
             }
 
             .seccion-contador {
                 text-align: center;
+                padding-top: 18px;
+            }
+
+            .titulo-contador {
+                font-size: clamp(0.8rem, 2.2vw, 0.9rem);
             }
 
             #contador-tiempo-real {
-                font-size: 1.15rem;
+                font-size: clamp(1rem, 3vw, 1.2rem);
             }
         }
 
-        /* Extra pequeño (iPhone SE, etc) */
-        @media (max-width: 375px) {
+        /* Extra pequeño (iPhone SE, iPhone X, etc) */
+        @media (max-width: 390px) {
             .sobre {
-                width: 200px;
-                height: 132px;
+                width: clamp(170px, 50vw, 200px);
+                height: clamp(110px, 33vw, 132px);
             }
 
             .sobre-solapa {
-                border-left: 101px solid transparent;
-                border-right: 101px solid transparent;
-                border-top: 73px solid #b07e52;
+                border-left: clamp(86px, 25.5vw, 101px) solid transparent;
+                border-right: clamp(86px, 25.5vw, 101px) solid transparent;
+                border-top: clamp(60px, 18vw, 73px) solid #b07e52;
             }
 
             .columna-arbol {
-                height: 300px;
+                height: clamp(240px, 38vh, 310px);
             }
 
             .copa-arbol-contenedor {
-                width: 230px;
-                height: 240px;
-                bottom: 35px;
+                width: clamp(190px, 58vw, 240px);
+                height: clamp(200px, 30vh, 250px);
+                bottom: clamp(25px, 4vh, 40px);
+            }
+
+            .tronco {
+                height: clamp(75px, 12vh, 100px);
+                width: 16px;
             }
 
             .columna-texto {
-                font-size: 0.95rem;
+                font-size: clamp(0.88rem, 2.4vw, 0.98rem);
+                margin-bottom: 22px;
             }
 
-            #contador-tiempo-real {
-                font-size: 1.05rem;
+            .titulo-principal {
+                font-size: clamp(1.05rem, 3vw, 1.2rem);
             }
         }
     </style>
